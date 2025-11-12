@@ -1,5 +1,6 @@
 import taskModel from "../models/taskmodel.js";
 
+// ➕ Add Task
 const addTask = async (req, res) => {
   const task = new taskModel({
     title: req.body.title,
@@ -13,48 +14,80 @@ const addTask = async (req, res) => {
 
   try {
     await task.save();
-    res.json({ success: true, message: "Food Added" });
+    res.json({ success: true, message: "Task Added" });
   } catch (error) {
     console.log(error);
-    res.json({ succes: false, message: "Error" });
+    res.json({ success: false, message: "Error adding task" });
   }
 };
 
-// all food list
-
+// 📜 Get All Tasks
 const alltask = async (req, res) => {
   try {
     const tasks = await taskModel.find({});
     res.json({ success: true, data: tasks });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    res.json({ success: false, message: "Error fetching tasks" });
   }
 };
 
-// remove food item
-
-const task = async (req, res) => {
+// 🔍 Get Single Task by ID
+const getSingleTask = async (req, res) => {
   try {
-    const task = await taskModel.findById(req.body.id);
-    res.json({ success: true, data:task });
+    const { id } = req.params;
+    const task = await taskModel.findById(id);
+    if (!task) {
+      return res.status(404).json({ success: false, message: "Task not found" });
+    }
+    res.status(200).json({ success: true, data: task });
   } catch (error) {
-    console.log("remove error", req.body.id);
-    console.log(error);
-    res.json({ success: false, message: "Error" });
+    console.error("Get Single Task Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-const mytask = async (req, res) => {
+// 📬 Get Tasks by Email (My Tasks)
+const mytaskdata = async (req, res) => {
   const email = req.body.email;
-  const task = await taskModel.find();
-  const mytaskdata = task.filter((e)=>{
-      if(task.email==email){
-        return task;
-      }
-  });
-  
-  res.json({success:true,data:mytaskdata})
-}
+  try {
+    const tasks = await taskModel.find({ email });
+    res.json({ success: true, data: tasks });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error fetching my tasks" });
+  }
+};
 
-export { addTask, alltask, task,mytask };
+// 🗑️ Delete Task
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await taskModel.findByIdAndDelete(id);
+    res.json({ success: true, message: "Task deleted successfully" });
+  } catch (error) {
+    console.error("Delete Error:", error);
+    res.status(500).json({ success: false, message: "Failed to delete task" });
+  }
+};
+
+// ✏️ Update Task
+const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedTask = await taskModel.findByIdAndUpdate(id, req.body, { new: true });
+    res.json({ success: true, data: updatedTask });
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).json({ success: false, message: "Failed to update task" });
+  }
+};
+
+export {
+  addTask,
+  alltask,
+  getSingleTask,
+  mytaskdata,
+  deleteTask,
+  updateTask,
+};
