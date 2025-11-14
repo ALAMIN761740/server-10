@@ -1,6 +1,6 @@
 import taskModel from "../models/taskmodel.js";
 
-// ➕ Add Task
+// Add Task
 const addTask = async (req, res) => {
   const task = new taskModel({
     title: req.body.title,
@@ -21,7 +21,7 @@ const addTask = async (req, res) => {
   }
 };
 
-// 📜 Get All Tasks
+// Get All Tasks
 const alltask = async (req, res) => {
   try {
     const tasks = await taskModel.find({});
@@ -32,14 +32,12 @@ const alltask = async (req, res) => {
   }
 };
 
-// 🔍 Get Single Task by ID
+// Get Single Task by ID (from URL param)
 const getSingleTask = async (req, res) => {
   try {
     const { id } = req.params;
     const task = await taskModel.findById(id);
-    if (!task) {
-      return res.status(404).json({ success: false, message: "Task not found" });
-    }
+    if (!task) return res.status(404).json({ success: false, message: "Task not found" });
     res.status(200).json({ success: true, data: task });
   } catch (error) {
     console.error("Get Single Task Error:", error);
@@ -47,7 +45,23 @@ const getSingleTask = async (req, res) => {
   }
 };
 
-// 📬 Get Tasks by Email (My Tasks)
+// Get Task by POST body ID (for TaskDetails.jsx)
+const getTask = async (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ message: "Task ID required" });
+
+    const task = await taskModel.findById(id); // ✅ use taskModel, not Task
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    res.json({ data: task });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get Tasks by Email (My Tasks)
 const mytaskdata = async (req, res) => {
   const email = req.body.email;
   try {
@@ -59,7 +73,7 @@ const mytaskdata = async (req, res) => {
   }
 };
 
-// 🗑️ Delete Task
+// Delete Task
 const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,7 +85,7 @@ const deleteTask = async (req, res) => {
   }
 };
 
-// ✏️ Update Task
+// Update Task
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,6 +101,7 @@ export {
   addTask,
   alltask,
   getSingleTask,
+  getTask, 
   mytaskdata,
   deleteTask,
   updateTask,
