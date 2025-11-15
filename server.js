@@ -13,7 +13,7 @@ app.use(express.json())
 
 
 app.use(cors({
-    origin: "https://client-10-main-kpb808ipm-al-amins-projects-38f269e4.vercel.app/",
+    origin: "https://client-10-main.vercel.app/",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
