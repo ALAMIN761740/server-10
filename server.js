@@ -13,22 +13,23 @@ app.use(express.json())
 
 
 app.use(cors({
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
 }));
 // db connected 
 connectdb()
 // add router
-app.use('/api/taskroute',taskroute)
+app.use('/api/taskroute', taskroute)
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
     res.send("API Working")
 })
 
 try {
-    app.listen(port,()=>{
-    console.log(`Server is Started on http://localhost:${port}`)
-})
+    app.listen(port, () => {
+        console.log(`Server is Started on http://localhost:${port}`)
+    })
 } catch (error) {
     console.log(error)
 }
