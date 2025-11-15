@@ -35,7 +35,7 @@ const alltask = async (req, res) => {
 // Get Single Task by ID (from URL param)
 const getSingleTask = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const task = await taskModel.findById(id);
     if (!task) return res.status(404).json({ success: false, message: "Task not found" });
     res.status(200).json({ success: true, data: task });
