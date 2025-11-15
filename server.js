@@ -13,7 +13,7 @@ app.use(express.json())
 
 
 app.use(cors({
-  origin: "https://server-10-w3lm.onrender.com/", 
+  origin: "https://server-10-z0fb.onrender.com/", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
